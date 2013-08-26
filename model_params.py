@@ -42,22 +42,13 @@ MODEL_PARAMS = {
 
             # Ski slope encoder
             'encoders': {   
-              'padding': {
-                'fieldname': u'padding',
+              'treeleft': {
+                'fieldname': u'treeleft',
                 'n': 200,
-                'name': u'padding',
+                'name': u'treeleft',
                 'type': 'ScalarEncoder',
                 'minval': 0,
                 'maxval': 80,
-                'w': 21
-              },
-              'width': {
-                'fieldname': u'width',
-                'n': 200,
-                'name': u'width',
-                'type': 'ScalarEncoder',
-                'minval': 0,
-                'maxval': 40,
                 'w': 21
               },
               'pos': {
@@ -65,6 +56,15 @@ MODEL_PARAMS = {
                 'fieldname': u'pos',
                 'n': 200,
                 'name': u'pos',
+                'type': 'ScalarEncoder',
+                'minval': 0,
+                'maxval': 80,
+                'w': 21
+              },
+              'treeright': {
+                'fieldname': u'treeright',
+                'n': 200,
+                'name': u'treeright',
                 'type': 'ScalarEncoder',
                 'minval': 0,
                 'maxval': 80,

@@ -64,7 +64,8 @@ def print_slopeline(padding,tree,skier,slopewidth,skierposition):
     rightspace = slopewidth - leftspace
     slopeline =  padding*" " + tree + leftspace*" " + skier + rightspace*" " + tree
     print slopeline
-    return {'padding': padding, 'width': slopewidth, 'pos': skierposition}
+    paddingr = padding + slopewidth
+    return {'treeleft': padding, 'pos': skierposition, 'treeright': paddingr}
 
 def print_slopeline_perfect(padding,tree,skier,slopewidth):
     skierposition = padding + slopewidth/2

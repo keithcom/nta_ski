@@ -8,9 +8,7 @@ This is a simple example program that is trying to teach a NuPIC HTM how to play
               |              H               |                              
             Tree           Skier           Tree
 
-The slope line is encoded as three integer values to pass into the model: the left padding value, the width between the trees, and the skier position.  
-
-|-- Padding --|----------- Width ------------|
+The slope line is encoded as three integer values to pass into the model: the left tree position, the skier position, and the right tree position.
 
 Given the current ski slope line, we ask the model to predict the next skier position.  If the position is greater than the current value, the skier is moved to right one space.  If the position is less than the current value, the skier is moved to the left one space.  Otherwise, the skier position is left alone.
 
