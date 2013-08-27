@@ -32,9 +32,15 @@ from nupic.data.inference_shifter import InferenceShifter
 import model_params
 
 
-_NUM_RECORDS = 1000
-
 yards = 0
+slopesize = 80
+slopewidth = 31
+
+# uncomment for repeatable testing data
+random.seed("NuPIC")
+
+# number of records to train on
+_NUM_RECORDS = 5000
 
 
 #-----------------------------------------------------------------------------
@@ -60,11 +66,13 @@ def print_slopeline(padding,tree,skier,slopewidth,skierposition):
     far from the left side of the screen the slope begins.
     0--------------t--------S----------t-------------
     """
+    global yards
+    global slopesize
     leftspace = skierposition - padding
     rightspace = slopewidth - leftspace
-    slopeline =  padding*" " + tree + leftspace*" " + skier + rightspace*" " + tree
-    print slopeline
     paddingr = padding + slopewidth
+    paddingright = slopesize - paddingr
+    print padding*" " + tree + leftspace*" " + skier + rightspace*" " + tree + paddingright*" ", yards
     return {'treeleft': padding, 'pos': skierposition, 'treeright': paddingr}
 
 def print_slopeline_perfect(padding,tree,skier,slopewidth):
@@ -79,10 +87,11 @@ def print_slopeline_crash(padding,tree,skier,slopewidth,skierposition):
     tree = "*"
     return print_slopeline(padding,tree,skier,slopewidth,skierposition)
 
-def print_stats(yards):
+def print_stats():
     """
     This function prints the final stats after a skier has crashed.
     """
+    global yards
     print
     print "You skied a total of", yards, "yards!"
     print
@@ -99,11 +108,12 @@ def createModel():
 
 def runGame():
   global yards
+  global slopesize
+  global slopewidth
   tree = "|"
   skier = "H"
-  slopewidth = 31
   minpadding = 0
-  maxpadding = 80 - slopewidth
+  maxpadding = slopesize - slopewidth
   choicelist_drift = [-2,-1,0,1,2]
 
   padding = 14
@@ -115,9 +125,10 @@ def runGame():
 
   # - Train on a perfect run
   print
-  print "================================ Start Training ================================"
+  print "================================= Start Training ================================="
   print
   for i in xrange(_NUM_RECORDS):
+    yards = yards + 1
     drift = generate_random(choicelist_drift)
     padding = padding + drift
     if padding > maxpadding:
@@ -129,10 +140,15 @@ def runGame():
     result = inf_shift.shift(model.run(record))
 
   # - Then set it free to run on it's own
+  model.disableLearning()
   print
-  print "================================== Begin Game =================================="
+  print "=================================== Begin Game ==================================="
   print
+  yards = 0
+  padding = 14
+  skierposition = (padding + (slopewidth/2))
   while True:
+    yards = yards + 1
     drift = generate_random(choicelist_drift)
     padding = padding + drift
     if padding > maxpadding:
@@ -147,9 +163,8 @@ def runGame():
     inferred = result.inferences['multiStepPredictions'][1]
     predicted = sorted(inferred.items(), key=lambda x: x[1])[-1][0]
     skierposition = calc_skier_position(skierposition, predicted)
-    yards = yards + 1
 
 
 if __name__ == "__main__":
   runGame()
-  print_stats(yards)
+  print_stats()
