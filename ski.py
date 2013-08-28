@@ -34,7 +34,11 @@ import model_params
 
 yards = 0
 slopesize = 80
-slopewidth = 31
+#slopewidth = 31
+slopewidth = 23
+slopewidthmin = 27
+slopewidthmax = 35
+variablewidth = False
 
 # uncomment for repeatable testing data
 random.seed("NuPIC")
@@ -110,12 +114,17 @@ def runGame():
   global yards
   global slopesize
   global slopewidth
+  global slopewidthmin
+  global slopewidthmax
+  global variablewidth
   tree = "|"
   skier = "H"
   minpadding = 0
   maxpadding = slopesize - slopewidth
   choicelist_drift = [-2,-1,0,1,2]
+  choicelist_width = [-2,0,2]
 
+  change = 0
   padding = 14
   skierposition = (padding + (slopewidth/2))
 
@@ -129,12 +138,27 @@ def runGame():
   print
   for i in xrange(_NUM_RECORDS):
     yards = yards + 1
+    if (variablewidth):
+        change = generate_random(choicelist_width)
+        slopewidth = slopewidth + change
+        if slopewidth > slopewidthmax:
+            slopewidth = slopewidthmax
+        if slopewidth < slopewidthmin:
+            slopewidth = slopewidthmin
+
     drift = generate_random(choicelist_drift)
     padding = padding + drift
     if padding > maxpadding:
         padding = maxpadding
     if padding < minpadding:
         padding = minpadding
+
+	padding = padding - (change/2)
+    if padding < 0:
+        padding = 0
+    if padding + slopewidth > slopesize:
+        padding = slopesize - slopewidth
+
     record = print_slopeline_perfect(padding,tree,skier,slopewidth)
 
     result = inf_shift.shift(model.run(record))
@@ -149,12 +173,27 @@ def runGame():
   skierposition = (padding + (slopewidth/2))
   while True:
     yards = yards + 1
+    if (variablewidth):
+        change = generate_random(choicelist_width)
+        slopewidth = slopewidth + change
+        if slopewidth > slopewidthmax:
+            slopewidth = slopewidthmax
+        if slopewidth < slopewidthmin:
+            slopewidth = slopewidthmin
+
     drift = generate_random(choicelist_drift)
     padding = padding + drift
     if padding > maxpadding:
         padding = maxpadding
     if padding < minpadding:
         padding = minpadding
+
+	padding = padding - (change/2)
+    if padding < 0:
+        padding = 0
+    if padding + slopewidth > slopesize:
+        padding = slopesize - slopewidth
+
     record = print_slopeline(padding,tree,skier,slopewidth,skierposition)
     if ((skierposition - padding) < 1) or ((skierposition - padding) > slopewidth):
         break
