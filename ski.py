@@ -40,7 +40,7 @@ slopewidth = 31
 random.seed("NuPIC")
 
 # number of records to train on
-_NUM_RECORDS = 5000
+_NUM_RECORDS = 2000
 
 
 #-----------------------------------------------------------------------------

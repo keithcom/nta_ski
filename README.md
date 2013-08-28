@@ -16,6 +16,7 @@ How far can your AI ski before it crashes into the trees?
 
 
 Credits
+
 The ski game code is based on:
 https://github.com/codycollier/ski
 
