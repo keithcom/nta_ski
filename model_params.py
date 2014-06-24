@@ -19,7 +19,7 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 
-MODEL_PARAMS = {
+config = {
     # Type of model that the rest of these parameters apply to.
     'model': "CLA",
 

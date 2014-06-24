@@ -29,14 +29,14 @@ import logging
 from nupic.frameworks.opf.modelfactory import ModelFactory
 from nupic.data.inference_shifter import InferenceShifter
 
-import model_params
+#import model_params
+import description
 
 
 yards = 0
 slopesize = 80
-#slopewidth = 31
-slopewidth = 23
-slopewidthmin = 27
+slopewidth = 21
+slopewidthmin = 23
 slopewidthmax = 35
 variablewidth = False
 
@@ -106,7 +106,7 @@ def print_stats():
 # nupic functions
 #-----------------------------------------------------------------------------
 def createModel():
-  return ModelFactory.create(model_params.MODEL_PARAMS)
+  return ModelFactory.create(description.config)
 
 
 
@@ -136,6 +136,20 @@ def runGame():
   print
   print "================================= Start Training ================================="
   print
+  for i in xrange(slopesize - slopewidth):
+    record = print_slopeline_perfect(i,tree,skier,slopewidth)
+    result = inf_shift.shift(model.run(record))
+
+  while i > 0:
+    record = print_slopeline_perfect(i,tree,skier,slopewidth)
+    result = inf_shift.shift(model.run(record))
+    i = i - 1
+
+  while i < padding:
+    record = print_slopeline_perfect(i,tree,skier,slopewidth)
+    result = inf_shift.shift(model.run(record))
+    i = i + 1
+
   for i in xrange(_NUM_RECORDS):
     yards = yards + 1
     if (variablewidth):
@@ -153,7 +167,7 @@ def runGame():
     if padding < minpadding:
         padding = minpadding
 
-	padding = padding - (change/2)
+    padding = padding - (change/2)
     if padding < 0:
         padding = 0
     if padding + slopewidth > slopesize:
@@ -188,7 +202,7 @@ def runGame():
     if padding < minpadding:
         padding = minpadding
 
-	padding = padding - (change/2)
+    padding = padding - (change/2)
     if padding < 0:
         padding = 0
     if padding + slopewidth > slopesize:
@@ -199,8 +213,15 @@ def runGame():
         break
 
     result = inf_shift.shift(model.run(record))
-    inferred = result.inferences['multiStepPredictions'][1]
-    predicted = sorted(inferred.items(), key=lambda x: x[1])[-1][0]
+    #inferred = result.inferences['multiStepPredictions'][1]
+    #predicted = sorted(inferred.items(), key=lambda x: x[1])[-1][0]
+    predicted = 0.0
+    total_probability = 0.0
+    for key, value in result.inferences['multiStepPredictions'][1].iteritems():
+        predicted += float(key) * float(value)
+        total_probability += float(value)
+    predicted = predicted / total_probability
+
     skierposition = calc_skier_position(skierposition, predicted)
 
 
